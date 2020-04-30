@@ -10,6 +10,11 @@ import (
 	"github.com/satyrius/gonx"
 )
 
+type Score struct {
+	Remote_addr     string
+	Body_bytes_sent string
+}
+
 var format string
 var logFile string
 
@@ -56,9 +61,22 @@ func main() {
 
 	results := gonx.MapReduce(logReader, parser, reducer)
 
+	// Pull results to Score struct
+	// Own struct - own rules!
+	// We may implement custom methods or types or structs in our struct
+	scores := []Score{}
+	for res := range results {
+		var score = new(Score)
+		score.Remote_addr, _ = res.Field("remote_addr")
+		score.Body_bytes_sent, _ = res.Field("body_bytes_sent")
+
+		scores = append(scores, *score)
+	}
+
 	// Print the report
-	for rep := range results {
-		fmt.Printf("Parsed entry: %+v\n", rep)
+	for rep := range scores {
+		fmt.Println(scores[rep].Remote_addr,
+			scores[rep].Body_bytes_sent)
 	}
 
 }
