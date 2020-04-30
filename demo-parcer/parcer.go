@@ -80,7 +80,7 @@ func main() {
 	})
 
 	// Print the report
-	for rep := range scores {
+	for rep := range scores[:10] {
 		fmt.Println(scores[rep].Remote_addr,
 			scores[rep].Body_bytes_sent)
 	}
