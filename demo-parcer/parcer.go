@@ -79,8 +79,14 @@ func main() {
 		return scores[i].Body_bytes_sent > scores[j].Body_bytes_sent
 	})
 
+	// Set the limit
+	limit := len(scores)
+	if limit > 10 {
+		limit = 10
+	}
+
 	// Print the report
-	for rep := range scores[:10] {
+	for rep := range scores[:limit] {
 		fmt.Println(scores[rep].Remote_addr,
 			scores[rep].Body_bytes_sent)
 	}
