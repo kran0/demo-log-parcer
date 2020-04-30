@@ -14,7 +14,8 @@ import (
 )
 
 type AppConfig struct {
-	Limit int
+	Limit    int
+	FileName string
 }
 
 type Score struct {
@@ -43,7 +44,7 @@ func main() {
 			"request_id=$upstream_http_x_request_id", "Log format")
 
 	flag.StringVar(&logFile, "log",
-		"-", "Log file name to read. Read from STDIN if file name is '-'")
+		c.FileName, "Log file name to read. Read from STDIN if file name is '-'")
 
 	flag.Parse()
 
