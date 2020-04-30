@@ -4,12 +4,18 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"sort"
 	"strings"
 
+	"github.com/kelseyhightower/envconfig"
 	"github.com/satyrius/gonx"
 )
+
+type AppConfig struct {
+	Limit int
+}
 
 type Score struct {
 	Remote_addr     string
@@ -20,6 +26,13 @@ var format string
 var logFile string
 
 func main() {
+
+	// Get app config from env
+	var c AppConfig
+	err := envconfig.Process("app", &c)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// Set parcer params
 	flag.StringVar(&format, "format",
@@ -81,8 +94,8 @@ func main() {
 
 	// Set the limit
 	limit := len(scores)
-	if limit > 10 {
-		limit = 10
+	if c.Limit < limit {
+		limit = c.Limit
 	}
 
 	// Print the report
