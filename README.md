@@ -23,7 +23,7 @@ Run:
 
 ```bash
   export PARCER_LIMIT=10
-  export PARCER_FILENAME=/path/to/access.log # stdin: PARCER_FILENAME=-
+  export PARCER_FILENAME=./examples/access.log # stdin: PARCER_FILENAME=-
   ./demo-parcer
 ```
 
@@ -36,7 +36,7 @@ Run:
 Run:
 
 ```bash
-   cat access.log |
+   cat ./examples/*.log |
     docker run -i --rm\
      -e PARCER_FILENAME=-\
      -e PARCER_LIMIT=10\
