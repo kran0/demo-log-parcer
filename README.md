@@ -43,10 +43,6 @@ Run:
      demo-parcer:latest
 ```
 
-## Build and run with compose
-
-**todo**
-
 ---
 [link_nginx_home]:https://nginx.org/
 [link_gonx_home]:https://github.com/satyrius/gonx
