@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/kelseyhightower/envconfig"
@@ -20,7 +21,7 @@ type AppConfig struct {
 
 type Score struct {
 	Remote_addr     string
-	Body_bytes_sent string
+	Body_bytes_sent uint64
 }
 
 var format string
@@ -83,7 +84,9 @@ func main() {
 	for res := range results {
 		var score = new(Score)
 		score.Remote_addr, _ = res.Field("remote_addr")
-		score.Body_bytes_sent, _ = res.Field("body_bytes_sent")
+
+		body_bytes_sent, _ := res.Field("body_bytes_sent")
+		score.Body_bytes_sent, _ = strconv.ParseUint(strings.TrimSuffix(body_bytes_sent, ".00"), 10, 64)
 
 		scores = append(scores, *score)
 	}
