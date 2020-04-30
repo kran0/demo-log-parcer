@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"code.cloudfoundry.org/bytefmt"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/satyrius/gonx"
 )
@@ -105,7 +106,7 @@ func main() {
 	// Print the report
 	for rep := range scores[:limit] {
 		fmt.Println(scores[rep].Remote_addr,
-			scores[rep].Body_bytes_sent)
+			bytefmt.ByteSize(scores[rep].Body_bytes_sent))
 	}
 
 }
