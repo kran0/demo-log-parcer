@@ -29,7 +29,7 @@ func main() {
 
 	// Get app config from env
 	var c AppConfig
-	err := envconfig.Process("app", &c)
+	err := envconfig.Process("parcer", &c)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
