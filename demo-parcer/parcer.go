@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/satyrius/gonx"
@@ -72,6 +73,11 @@ func main() {
 
 		scores = append(scores, *score)
 	}
+
+	// Sort []Scores
+	sort.Slice(scores, func(i, j int) bool {
+		return scores[i].Body_bytes_sent > scores[j].Body_bytes_sent
+	})
 
 	// Print the report
 	for rep := range scores {
