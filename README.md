@@ -5,7 +5,7 @@ Demo log parcer
 Implements:
  - Read config from ENV;
  - Read [nginx][link_nginx_home] access.log from file or stdin;
- - Select "columns" from log file based on file structure (using [gonx][link_gonx_home] );
+ - Select "columns" from log file based on file structure (using [gonx][link_gonx_home]);
  - Group, Sum, Limit entries;
  - Display the result in human readable format.
 
@@ -23,7 +23,7 @@ Run:
 
 ```bash
   export PARCER_LIMIT=10
-  PARCER_FILENAME=/path/to/access.log # stdin: PARCER_FILENAME=-
+  export PARCER_FILENAME=/path/to/access.log # stdin: PARCER_FILENAME=-
   ./demo-parcer
 ```
 
