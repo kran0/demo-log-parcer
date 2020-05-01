@@ -81,7 +81,10 @@ func main() {
 		score.Remote_addr, _ = res.Field("remote_addr")
 
 		body_bytes_sent, _ := res.Field("body_bytes_sent")
-		score.Body_bytes_sent, _ = strconv.ParseUint(strings.TrimSuffix(body_bytes_sent, ".00"), 10, 64)
+		score.Body_bytes_sent, err = strconv.ParseUint(strings.TrimSuffix(body_bytes_sent, ".00"), 10, 64)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Skipping. Cannot convert str to uint64: %v", err)
+		}
 
 		scores = append(scores, *score)
 	}

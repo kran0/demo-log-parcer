@@ -47,6 +47,7 @@ Run:
    cat ./examples/*.log |
     docker run -i --rm\
      -e PARCER_FILENAME=-\
+     -e PARCER_HUMANREADABLE=true\
      demo-parcer:latest
 ```
 
