@@ -16,8 +16,10 @@ import (
 )
 
 type AppConfig struct {
-	Limit    int
-	FileName string
+	Limit         int    `default:"10"`
+	FileName      string `required:"true"`
+	LogFormat     string `default:"$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent $request_time \"$http_referer\" \"$http_user_agent\" [upstream: $upstream_addr $upstream_status] request_id=$upstream_http_x_request_id"`
+	HumanReadable bool   `default:"false"`
 }
 
 type Score struct {
@@ -38,16 +40,8 @@ func main() {
 	}
 
 	// Set parcer params
-	flag.StringVar(&format, "format",
-		"$remote_addr - $remote_user [$time_local] "+
-			"\"$request\" $status $body_bytes_sent $request_time "+
-			"\"$http_referer\" \"$http_user_agent\" "+
-			"[upstream: $upstream_addr $upstream_status] "+
-			"request_id=$upstream_http_x_request_id", "Log format")
-
-	flag.StringVar(&logFile, "log",
-		c.FileName, "Log file name to read. Read from STDIN if file name is '-'")
-
+	flag.StringVar(&format, "format", c.LogFormat, "Log format")
+	flag.StringVar(&logFile, "log", c.FileName, "Log file name to read. Read from STDIN if file name is '-'")
 	flag.Parse()
 
 	// Create a parser based on given format
@@ -105,8 +99,12 @@ func main() {
 
 	// Print the report
 	for rep := range scores[:limit] {
-		fmt.Println(scores[rep].Remote_addr,
-			bytefmt.ByteSize(scores[rep].Body_bytes_sent))
+		if c.HumanReadable {
+			fmt.Println(scores[rep].Remote_addr,
+				bytefmt.ByteSize(scores[rep].Body_bytes_sent))
+		} else {
+			fmt.Println(scores[rep].Remote_addr)
+		}
 	}
 
 }
