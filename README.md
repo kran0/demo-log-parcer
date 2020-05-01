@@ -15,10 +15,11 @@ Implements:
 
 | Name | type | Description |
 |:----:|:-----|:------------|
-| PARCER_FILENAME      | string | **Required**. Using stdin if set to "```-```" |
-| PARCER_LIMIT         | int    | Default:```10```                                      |
-| PARCER_LOGFORMAT     | string | Default:```$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent $request_time "$http_referer" "$http_user_agent" [upstream: $upstream_addr $upstream_status] request_id=$upstream_http_x_request_id``` |
-| PARCER_HUMANREADABLE | bool   | Default:```false```                                   |
+| PARCER_INPUTFILE           | string | **Required**. Using stdin if set to ```"-"``` |
+| PARCER_INPUTFILEFORMAT     | string | Default:```$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent $request_time "$http_referer" "$http_user_agent" [upstream: $upstream_addr $upstream_status] request_id=$upstream_http_x_request_id``` |
+| PARCER_OUTPUTFILE          | string | Default:```"-"``` (stdout) |
+| PARCER_OUTPUTLIMIT         | int    | Default:```10```           |
+| PARCER_OUTPUTHUMANREADABLE | bool   | Default:```false```        |
 
 ## Build winth Golang (1.8+) and run
 
@@ -31,7 +32,7 @@ Implements:
 Run:
 
 ```bash
-  export PARCER_FILENAME=../examples/access.log # stdin: PARCER_FILENAME=-
+  export PARCER_INPUTFILE=../examples/access.log # stdin: PARCER_FILENAME=-
   ./demo-parcer
 ```
 
@@ -46,8 +47,8 @@ Run:
 ```bash
    cat ./examples/*.log |
     docker run -i --rm\
-     -e PARCER_FILENAME=-\
-     -e PARCER_HUMANREADABLE=true\
+     -e PARCER_INPUTFILE=-\
+     -e PARCER_OUTPUTHUMANREADABLE=true\
      demo-parcer:latest
 ```
 

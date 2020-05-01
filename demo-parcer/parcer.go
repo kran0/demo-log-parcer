@@ -16,10 +16,11 @@ import (
 )
 
 type AppConfig struct {
-	Limit         int    `default:"10"`
-	FileName      string `required:"true"`
-	LogFormat     string `default:"$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent $request_time \"$http_referer\" \"$http_user_agent\" [upstream: $upstream_addr $upstream_status] request_id=$upstream_http_x_request_id"`
-	HumanReadable bool   `default:"false"`
+	InputFile           string `required:"true"`
+	InputFileFormat     string `default:"$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent $request_time \"$http_referer\" \"$http_user_agent\" [upstream: $upstream_addr $upstream_status] request_id=$upstream_http_x_request_id"`
+	OutputFile          string `default:"-"`
+	OutputLimit         int    `default:"10"`
+	OutputHumanReadable bool   `default:"false"`
 }
 
 type Score struct {
@@ -30,18 +31,22 @@ type Score struct {
 var format string
 var logFile string
 
+func check(e error) {
+	if e != nil {
+		log.Fatal(e.Error())
+		panic(e)
+	}
+}
+
 func main() {
 
 	// Get app config from env
 	var c AppConfig
 	err := envconfig.Process("parcer", &c)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
+	check(err)
 	// Set parcer params
-	flag.StringVar(&format, "format", c.LogFormat, "Log format")
-	flag.StringVar(&logFile, "log", c.FileName, "Log file name to read. Read from STDIN if file name is '-'")
+	flag.StringVar(&format, "format", c.InputFileFormat, "Log format")
+	flag.StringVar(&logFile, "log", c.InputFile, "Log file name to read. Read from STDIN if file name is '-'")
 	flag.Parse()
 
 	// Create a parser based on given format
@@ -49,17 +54,23 @@ func main() {
 
 	// Read given file or from STDIN
 	var logReader io.Reader
-	if logFile == "dummy" {
-		logReader = strings.NewReader(`195.77.230.188 - - [29/Mar/2020:16:05:50 +0000] "GET /some-url HTTP/1.1" 200 1793 0.009 "https://example.com" "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36" [upstream: 127.0.0.1:8000 200] request_id=-`)
-	} else if logFile == "-" {
+	if logFile == "-" {
 		logReader = os.Stdin
 	} else {
 		file, err := os.Open(logFile)
-		if err != nil {
-			panic(err)
-		}
+		check(err)
 		logReader = file
 		defer file.Close()
+	}
+
+	var OutWriter io.Writer
+	if c.OutputFile == "-" {
+		OutWriter = os.Stdout
+	} else {
+		file1, err := os.Create(c.OutputFile)
+		check(err)
+		OutWriter = file1
+		defer file1.Close()
 	}
 
 	// Get stats from log file
@@ -96,17 +107,16 @@ func main() {
 
 	// Set the limit
 	limit := len(scores)
-	if c.Limit < limit {
-		limit = c.Limit
+	if c.OutputLimit < limit {
+		limit = c.OutputLimit
 	}
 
 	// Print the report
 	for rep := range scores[:limit] {
-		if c.HumanReadable {
-			fmt.Println(scores[rep].Remote_addr,
-				bytefmt.ByteSize(scores[rep].Body_bytes_sent))
+		if c.OutputHumanReadable {
+			io.WriteString(OutWriter, scores[rep].Remote_addr+" "+bytefmt.ByteSize(scores[rep].Body_bytes_sent)+"\r\n")
 		} else {
-			fmt.Println(scores[rep].Remote_addr)
+			io.WriteString(OutWriter, scores[rep].Remote_addr+"\r\n")
 		}
 	}
 
