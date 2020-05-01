@@ -11,6 +11,15 @@ Implements:
 
 # How to run?
 
+## Environment variables
+
+| Name | type | Description |
+|:----:|:-----|:------------|
+| PARCER_FILENAME      | string | **Required** use log file path or "-" for stdin |
+| PARCER_LIMIT         | int    | Default:10                                      |
+| PARCER_LOGFORMAT     | string | Default:```$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent $request_time "$http_referer" "$http_user_agent" [upstream: $upstream_addr $upstream_status] request_id=$upstream_http_x_request_id``` |
+| PARCER_HUMANREADABLE | bool   | Default:false                                   |
+
 ## Build winth Golang (1.8+) and run
 
 ```bash
@@ -22,8 +31,7 @@ Implements:
 Run:
 
 ```bash
-  export PARCER_LIMIT=10
-  export PARCER_FILENAME=./examples/access.log # stdin: PARCER_FILENAME=-
+  export PARCER_FILENAME=../examples/access.log # stdin: PARCER_FILENAME=-
   ./demo-parcer
 ```
 
@@ -39,7 +47,6 @@ Run:
    cat ./examples/*.log |
     docker run -i --rm\
      -e PARCER_FILENAME=-\
-     -e PARCER_LIMIT=10\
      demo-parcer:latest
 ```
 
