@@ -32,7 +32,7 @@ Implements:
 Run:
 
 ```bash
-  export PARCER_INPUTFILE=../examples/access.log # stdin: PARCER_FILENAME=-
+  export PARCER_INPUTFILE=../examples/access.log # stdin: PARCER_INPUTFILE=-
   ./demo-parcer
 ```
 
